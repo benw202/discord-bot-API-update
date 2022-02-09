@@ -67,13 +67,13 @@ client.on('message', async (msg) => {
                         transaction.result = 'success';
                     } catch ({ name, message, stack }) {
                         Logger.error({ name, message, stack });
-                        const error_embed = makeEmbed({
+                        const ErrorEmbed = makeEmbed({
                             color: 'RED',
                             title: 'Error while Executing Command',
                             description: DEBUG_MODE ? `\`\`\`D\n${stack}\`\`\`` : `\`\`\`\n${name}: ${message}\n\`\`\``,
                         });
 
-                        await msg.channel.send({embeds: [error_embed]});
+                        await msg.channel.send({ embeds: [ErrorEmbed] });
 
                         transaction.result = 'error';
                     }
@@ -93,7 +93,7 @@ client.on('message', async (msg) => {
 
 const fs = require('fs');
 
-const eventHandlers = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+const eventHandlers = fs.readdirSync('./events').filter((file) => file.endsWith('.js'));
 
 for (const handler of eventHandlers) {
     client.on(handler.event, handler.executor);
