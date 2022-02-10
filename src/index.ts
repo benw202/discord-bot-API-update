@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import fs from 'fs';
 import express from 'express';
 import Discord from 'discord.js';
 import commands from './commands';
@@ -7,6 +6,7 @@ import { makeEmbed } from './lib/embed';
 import Logger from './lib/logger';
 
 dotenv.config();
+const fs = require('fs');
 const apm = require('../node_modules/elastic-apm-node').start({
     serviceName: 'discord-bot',
     disableSend: true,
@@ -112,8 +112,10 @@ app.listen(3000, () => {
 process.on('SIGTERM', () => {
     Logger.info('SIGTERM signal received.');
     client.destroy();
-    app.listen(() => {
+    const server = app.listen(3000);
+    server.close(() => {
         Logger.info('Server stopped.');
+        process.exit();
     });
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
