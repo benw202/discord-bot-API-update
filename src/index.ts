@@ -1,5 +1,5 @@
-import { start } from 'elastic-apm-node';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import express from 'express';
 import Discord from 'discord.js';
 import commands from './commands';
@@ -7,7 +7,7 @@ import { makeEmbed } from './lib/embed';
 import Logger from './lib/logger';
 
 dotenv.config();
-const apm = start({
+const apm = require('../node_modules/elastic-apm-node').start({
     serviceName: 'discord-bot',
     disableSend: true,
 });
@@ -91,8 +91,6 @@ client.on('message', async (msg) => {
     }
 });
 
-const fs = require('fs');
-
 const eventHandlers = fs.readdirSync('./events').filter((file) => file.endsWith('.js'));
 
 for (const handler of eventHandlers) {
@@ -114,7 +112,11 @@ app.listen(3000, () => {
 process.on('SIGTERM', () => {
     Logger.info('SIGTERM signal received.');
     client.destroy();
-    app.close(() => {
+    app.listen(() => {
         Logger.info('Server stopped.');
     });
 });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function run(arg0: { serviceName: string; disableSend: boolean; }) {
+    throw new Error('Function not implemented.');
+}
